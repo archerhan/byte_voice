@@ -1,0 +1,28 @@
+{
+  "name": "sherpa_onnx_macos",
+  "version": "1.13.3",
+  "summary": "sherpa-onnx Flutter FFI plugin project.",
+  "description": "sherpa-onnx Flutter FFI plugin project.",
+  "homepage": "https://github.com/k2-fsa/sherpa-onnx",
+  "license": {
+    "file": "../LICENSE"
+  },
+  "authors": {
+    "Fangjun Kuang": "csukuangfj@gmail.com"
+  },
+  "source": {
+    "path": "."
+  },
+  "dependencies": {
+    "FlutterMacOS": []
+  },
+  "vendored_libraries": "*.dylib",
+  "platforms": {
+    "osx": "10.11"
+  },
+  "pod_target_xcconfig": {
+    "DEFINES_MODULE": "YES"
+  },
+  "swift_versions": "5.0",
+  "swift_version": "5.0"
+}
