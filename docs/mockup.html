@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ByteVoice macOS Mockup</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#1a1a1e;display:flex;flex-direction:column;align-items:center;min-height:100vh;font-family:-apple-system,BlinkMacSystemFont,"SF Pro","Helvetica Neue",sans-serif;padding:40px;gap:24px}
+.windows-row{display:flex;gap:30px;flex-wrap:wrap;justify-content:center}
+.window{width:960px;height:640px;background:#2c2c2e;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,0.5),inset 0 0 0 1px rgba(255,255,255,0.06);display:flex;flex-direction:column;overflow:hidden}
+.titlebar{height:38px;background:#3a3a3c;display:flex;align-items:center;padding:0 12px;flex-shrink:0;border-bottom:1px solid #1a1a1e}
+.traffic-lights{display:flex;gap:8px;margin-right:12px}
+.traffic-light{width:12px;height:12px;border-radius:50%}
+.tl-close{background:#ff5f57}
+.tl-minimize{background:#fdbc40}
+.tl-zoom{background:#34c840}
+.titlebar-title{flex:1;text-align:center;font-size:13px;font-weight:600;color:#e5e5e7;letter-spacing:-0.2px}
+.titlebar-right{display:flex;align-items:center;gap:12px}
+.titlebar-right .model-status{display:flex;align-items:center;gap:4px;background:#3a3a3c;padding:2px 10px;border-radius:4px;font-size:11px;color:#30d158}
+.titlebar-right .model-status::before{content:"";display:inline-block;width:6px;height:6px;background:#30d158;border-radius:50%}
+.titlebar-right .settings-icon{font-size:16px;cursor:default;opacity:0.7;color:#98989d}
+.body{display:flex;flex:1;min-height:0}
+.sidebar{width:240px;background:#252527;display:flex;flex-direction:column;flex-shrink:0;border-right:1px solid #1a1a1e}
+.sidebar-search{padding:10px 12px}
+.sidebar-search input{width:100%;padding:6px 10px;border-radius:6px;border:none;background:#3a3a3c;color:#e5e5e7;font-size:12px;outline:none}
+.sidebar-search input::placeholder{color:#636366}
+.sidebar-sections{flex:1;overflow-y:auto;padding:4px 0}
+.section-label{font-size:11px;font-weight:600;color:#8e8e93;text-transform:uppercase;letter-spacing:0.5px;padding:8px 12px 4px}
+.note-item{display:flex;align-items:center;padding:8px 12px;cursor:default;border-left:3px solid transparent}
+.note-item:hover{background:#2c2c2e}
+.note-item.active{background:#3a3a3c;border-left-color:#0a84ff}
+.note-item .icon{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:14px;margin-right:10px;flex-shrink:0}
+.note-item .icon.rec{background:rgba(255,69,58,0.2)}
+.note-item .icon.file{background:rgba(100,210,255,0.15)}
+.note-item .info{flex:1;min-width:0}
+.note-item .title{font-size:13px;font-weight:500;color:#e5e5e7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.note-item .meta{font-size:11px;color:#636366;margin-top:2px}
+.note-item .badge{font-size:10px;padding:2px 6px;border-radius:4px;flex-shrink:0}
+.badge.done{background:rgba(48,209,88,0.2);color:#30d158}
+.badge.progress{background:rgba(255,159,10,0.2);color:#ff9f0a}
+.sidebar-import{padding:10px 12px;border-top:1px solid #1a1a1e}
+.sidebar-import button{width:100%;padding:7px 0;border-radius:6px;border:1px dashed #48484a;background:transparent;color:#98989d;font-size:12px;cursor:default}
+.sidebar-import button:hover{background:#2c2c2e;color:#e5e5e7}
+.content{flex:1;display:flex;flex-direction:column;background:#2c2c2e;min-width:0}
+.content-header{padding:16px 20px 12px;border-bottom:1px solid #1a1a1e;display:flex;align-items:center;justify-content:space-between}
+.content-header h2{font-size:15px;font-weight:600;color:#e5e5e7}
+.content-header .actions{display:flex;gap:8px;align-items:center}
+.content-header .actions button{padding:4px 10px;border-radius:5px;border:none;font-size:11px;cursor:default}
+.btn-export{background:#3a3a3c;color:#e5e5e7}
+.btn-delete{background:rgba(255,69,58,0.15);color:#ff453a}
+.content-body{flex:1;overflow-y:auto;padding:16px 20px}
+.segment{display:flex;gap:12px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04)}
+.segment:last-child{border:none}
+.segment-time{width:72px;flex-shrink:0;font-size:11px;font-weight:500;color:#636366;padding-top:3px;cursor:default}
+.segment-time:hover{color:#0a84ff}
+.segment-text{flex:1;font-size:13px;line-height:1.5;color:#e5e5e7}
+.segment-text:hover{background:#3a3a3c;border-radius:4px;margin:-2px 0;padding:2px 4px}
+.segment-speaker{display:inline-block;padding:1px 6px;background:rgba(100,210,255,0.12);color:#64d2ff;border-radius:3px;font-size:10px;font-weight:600;margin-right:6px}
+.transcript-stream{flex:1;padding:20px;overflow-y:auto}
+.transcript-stream .line{display:flex;gap:12px;margin-bottom:14px;opacity:0;animation:fadeIn 0.35s ease forwards}
+.transcript-stream .line:nth-child(1){animation-delay:0.1s}
+.transcript-stream .line:nth-child(2){animation-delay:0.25s}
+.transcript-stream .line:nth-child(3){animation-delay:0.4s}
+.transcript-stream .line:nth-child(4){animation-delay:0.55s}
+.transcript-stream .line:nth-child(5){animation-delay:0.7s}
+.transcript-stream .line:nth-child(6){animation-delay:0.85s}
+.transcript-stream .time-tag{font-size:11px;color:#636366;width:56px;flex-shrink:0;padding-top:3px}
+.transcript-stream .text{font-size:14px;line-height:1.6;color:#e5e5e7}
+.transcript-stream .cursor{display:inline-block;width:2px;height:18px;background:#0a84ff;margin-left:2px;animation:blink 0.8s step-end infinite}
+@keyframes fadeIn{to{opacity:1}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+.toolbar{height:48px;background:#252527;display:flex;align-items:center;padding:0 16px;gap:12px;flex-shrink:0;border-top:1px solid #1a1a1e}
+.toolbar .divider{width:1px;height:24px;background:#38383a}
+.tool-btn{display:flex;align-items:center;gap:6px;padding:6px 14px;border:none;border-radius:6px;font-size:12px;font-weight:500;cursor:default}
+.tool-btn.record{background:#ff453a;color:#fff}
+.tool-btn.record.idle{background:#3a3a3c;color:#e5e5e7}
+.tool-btn.record.idle:hover{background:#48484a}
+.tool-btn.secondary{background:transparent;color:#98989d}
+.tool-btn.secondary:hover{background:#3a3a3c;color:#e5e5e7}
+.toolbar-status{margin-left:auto;font-size:11px;color:#636366;display:flex;gap:16px}
+.toolbar-status span{display:flex;align-items:center;gap:4px}
+.recording-indicator{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:#ff453a}
+.recording-indicator .dot{width:8px;height:8px;border-radius:50%;background:#ff453a;animation:pulse 1s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(0.9)}}
+.mockup-label{text-align:center;color:#636366;font-size:12px;margin-top:8px}
+.caption{max-width:1400px;text-align:center;color:#98989d;font-size:13px;line-height:1.6}
+.caption strong{color:#e5e5e7}
+
+/* 设置窗口 */
+.settings-window{width:680px;height:520px;background:#2c2c2e;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,0.5),inset 0 0 0 1px rgba(255,255,255,0.06);display:flex;flex-direction:column;overflow:hidden}
+.settings-body{display:flex;flex:1;min-height:0}
+.settings-nav{width:180px;background:#252527;display:flex;flex-direction:column;flex-shrink:0;border-right:1px solid #1a1a1e;padding:8px 0}
+.settings-nav-item{display:flex;align-items:center;gap:10px;padding:9px 16px;font-size:13px;color:#98989d;cursor:default;border-left:3px solid transparent}
+.settings-nav-item:hover{color:#e5e5e7}
+.settings-nav-item.active{color:#e5e5e7;background:#3a3a3c;border-left-color:#0a84ff}
+.settings-nav-item .nav-icon{font-size:16px;width:20px;text-align:center}
+.settings-content{flex:1;padding:24px 28px;overflow-y:auto}
+.settings-section{margin-bottom:28px}
+.settings-section:last-child{margin-bottom:0}
+.settings-section-title{font-size:12px;font-weight:600;color:#8e8e93;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px}
+.settings-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05)}
+.settings-row:last-child{border-bottom:none}
+.settings-label{font-size:13px;color:#e5e5e7}
+.settings-label-desc{font-size:11px;color:#636366;margin-top:2px}
+.settings-control select{background:#3a3a3c;color:#e5e5e7;border:none;padding:5px 10px;border-radius:5px;font-size:12px;outline:none;cursor:default}
+.settings-control select option{background:#3a3a3c;color:#e5e5e7}
+.toggle-switch{width:36px;height:20px;background:#48484a;border-radius:10px;cursor:default;position:relative;flex-shrink:0}
+.toggle-switch.on{background:#30d158}
+.toggle-switch .knob{width:16px;height:16px;background:#fff;border-radius:50%;position:absolute;top:2px;left:2px}
+.toggle-switch.on .knob{left:18px}
+.slider-control{display:flex;align-items:center;gap:10px}
+.slider-control input[type=range]{width:160px;height:4px;-webkit-appearance:none;background:#48484a;border-radius:2px;outline:none}
+.slider-control input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:#0a84ff;cursor:default}
+.slider-value{font-size:12px;color:#98989d;min-width:24px;text-align:right}
+.setting-tag{display:inline-block;padding:2px 8px;background:rgba(100,210,255,0.12);color:#64d2ff;border-radius:4px;font-size:11px;font-weight:500}
+.settings-btn{padding:5px 14px;border-radius:5px;border:none;font-size:12px;cursor:default}
+.settings-btn.primary{background:#0a84ff;color:#fff}
+.settings-btn.primary:hover{background:#409cff}
+.settings-btn.secondary{background:#3a3a3c;color:#e5e5e7}
+.settings-btn.secondary:hover{background:#48484a}
+.settings-btn.danger{background:rgba(255,69,58,0.15);color:#ff453a}
+.settings-btn.danger:hover{background:rgba(255,69,58,0.25)}
+.storage-bar{display:flex;align-items:center;gap:12px;padding:6px 0}
+.storage-track{width:200px;height:6px;background:#3a3a3c;border-radius:3px;overflow:hidden}
+.storage-fill{height:100%;width:35%;background:linear-gradient(90deg,#0a84ff,#5e5ce6);border-radius:3px}
+.storage-label{font-size:11px;color:#636366}
+.about-info{display:flex;flex-direction:column;gap:6px}
+.about-info .row{display:flex;gap:16px;font-size:13px}
+.about-info .key{color:#636366;min-width:80px}
+.about-info .value{color:#e5e5e7}
+.about-info .v-divider{width:1px;height:12px;background:#38383a}
+</style>
+</head>
+<body>
+
+<div class="windows-row">
+
+<!-- 场景 1：笔记详情 -->
+<div style="display:flex;flex-direction:column;align-items:center">
+  <div class="window">
+    <div class="titlebar">
+      <div class="traffic-lights"><div class="traffic-light tl-close"></div><div class="traffic-light tl-minimize"></div><div class="traffic-light tl-zoom"></div></div>
+      <div class="titlebar-title">ByteVoice</div>
+      <div class="titlebar-right"><div class="model-status">SenseVoice</div><div class="settings-icon">&#9881;</div></div>
+    </div>
+    <div class="body">
+      <div class="sidebar">
+        <div class="sidebar-search"><input type="text" placeholder="搜索笔记..." value="周会"></div>
+        <div class="sidebar-sections">
+          <div class="section-label">今天</div>
+          <div class="note-item active">
+            <div class="icon rec">&#127908;</div>
+            <div class="info"><div class="title">项目周会 &#8212; 第三期讨论</div><div class="meta">今天 14:23 &#183; 36m12s</div></div>
+            <div class="badge done">已完成</div>
+          </div>
+          <div class="note-item">
+            <div class="icon file">&#128196;</div>
+            <div class="info"><div class="title">产品需求评审</div><div class="meta">今天 10:05 &#183; 52m08s</div></div>
+            <div class="badge done">已完成</div>
+          </div>
+          <div class="section-label">本周</div>
+          <div class="note-item">
+            <div class="icon file">&#128196;</div>
+            <div class="info"><div class="title">设计评审 &#8212; UI 重构方案</div><div class="meta">6月15日 &#183; 28m45s</div></div>
+            <div class="badge done">已完成</div>
+          </div>
+          <div class="note-item">
+            <div class="icon rec">&#127908;</div>
+            <div class="info"><div class="title">用户访谈 &#8212; 张老师</div><div class="meta">6月14日 &#183; 1h12m</div></div>
+            <div class="badge done">已完成</div>
+          </div>
+          <div class="note-item">
+            <div class="icon file">&#128196;</div>
+            <div class="info"><div class="title">技术方案对齐</div><div class="meta">6月13日 &#183; 4m22s</div></div>
+            <div class="badge progress">转写中</div>
+          </div>
+        </div>
+        <div class="sidebar-import"><button>+ 导入音频文件</button></div>
+      </div>
+      <div class="content">
+        <div class="content-header">
+          <h2>项目周会 &#8212; 第三期讨论</h2>
+          <div class="actions"><button class="btn-export">导出 TXT</button><button class="btn-delete">删除</button></div>
+        </div>
+        <div class="content-body">
+          <div class="segment"><div class="segment-time">00:00</div><div class="segment-text"><span class="segment-speaker">A</span>好，那我们开始今天的周会。先回顾一下第三期的进展，客户端这边目前到什么阶段了？</div></div>
+          <div class="segment"><div class="segment-time">00:12</div><div class="segment-text"><span class="segment-speaker">B</span>客户端这边核心模块基本开发完了，目前在联调 SDK 的接入。</div></div>
+          <div class="segment"><div class="segment-time">00:24</div><div class="segment-text"><span class="segment-speaker">A</span>SDK 那边有什么阻塞吗？</div></div>
+          <div class="segment"><div class="segment-time">00:36</div><div class="segment-text"><span class="segment-speaker">B</span>有一个问题，就是实时转写的数据回传频率&#8230;</div></div>
+          <div class="segment"><div class="segment-time">00:52</div><div class="segment-text"><span class="segment-speaker">A</span>那这个要尽快拉个会对齐，预期什么时候能联调通过？</div></div>
+          <div class="segment"><div class="segment-time">01:04</div><div class="segment-text"><span class="segment-speaker">B</span>如果这个没有大问题的话，这周五可以出一个联调版本。</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="toolbar">
+      <button class="tool-btn record idle">&#127908; 录音</button>
+      <button class="tool-btn secondary">&#9199; 暂停</button>
+      <button class="tool-btn secondary">&#9209; 完成</button>
+      <div class="divider"></div>
+      <button class="tool-btn secondary">&#128194; 导入文件</button>
+      <div class="toolbar-status"><span>模型已加载</span><span>存储 1.2 GB</span></div>
+    </div>
+  </div>
+  <div class="mockup-label">场景 1 &#183; 笔记详情</div>
+</div>
+
+<!-- 场景 2：实时录音 -->
+<div style="display:flex;flex-direction:column;align-items:center">
+  <div class="window">
+    <div class="titlebar">
+      <div class="traffic-lights"><div class="traffic-light tl-close"></div><div class="traffic-light tl-minimize"></div><div class="traffic-light tl-zoom"></div></div>
+      <div class="titlebar-title">ByteVoice</div>
+      <div class="titlebar-right"><div class="model-status">SenseVoice</div><div class="settings-icon">&#9881;</div></div>
+    </div>
+    <div class="body">
+      <div class="sidebar">
+        <div class="sidebar-search"><input type="text" placeholder="搜索笔记..."></div>
+        <div class="sidebar-sections">
+          <div class="section-label">今天</div>
+          <div class="note-item active">
+            <div class="icon rec">&#127908;</div>
+            <div class="info"><div class="title">正在录音...</div><div class="meta">刚刚 &#183; 03:24</div></div>
+            <div class="badge progress">实时</div>
+          </div>
+          <div class="note-item">
+            <div class="icon file">&#128196;</div>
+            <div class="info"><div class="title">产品需求评审</div><div class="meta">今天 10:05 &#183; 52m08s</div></div>
+            <div class="badge done">已完成</div>
+          </div>
+          <div class="section-label">本周</div>
+          <div class="note-item">
+            <div class="icon file">&#128196;</div>
+            <div class="info"><div class="title">设计评审 &#8212; UI 重构方案</div><div class="meta">6月15日 &#183; 28m45s</div></div>
+            <div class="badge done">已完成</div>
+          </div>
+        </div>
+        <div class="sidebar-import"><button>+ 导入音频文件</button></div>
+      </div>
+      <div class="content">
+        <div class="content-header">
+          <h2><span class="recording-indicator"><span class="dot"></span> 录音中</span></h2>
+          <div class="actions"><span style="font-size:14px;font-weight:600;color:#98989d;">03:24</span></div>
+        </div>
+        <div class="transcript-stream">
+          <div class="line"><div class="time-tag">00:00</div><div class="text">好，那我们先从整体架构开始梳理。</div></div>
+          <div class="line"><div class="time-tag">00:08</div><div class="text">目前我们的方案是用 sherpa_onnx 的 Dart 绑定来做引擎层。</div></div>
+          <div class="line"><div class="time-tag">00:22</div><div class="text">VAD 的话用 Silero，模型比较轻量，大概 15MB 左右。</div></div>
+          <div class="line"><div class="time-tag">00:31</div><div class="text">架构分四层，音频、引擎、服务、UI，每层职责单一。</div></div>
+          <div class="line"><div class="time-tag">00:45</div><div class="text">数据库用 drift，状态管理用 Riverpod，<span class="cursor"></span></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="toolbar">
+      <button class="tool-btn record">&#128308; 录音中</button>
+      <button class="tool-btn secondary">&#9199; 暂停</button>
+      <button class="tool-btn secondary">&#9209; 完成</button>
+      <div class="divider"></div>
+      <button class="tool-btn secondary">&#128194; 导入文件</button>
+      <div class="toolbar-status"><span>模型已加载</span><span>存储 1.2 GB</span></div>
+    </div>
+  </div>
+  <div class="mockup-label">场景 2 &#183; 实时录音转写</div>
+</div>
+
+<!-- 场景 3：设置窗口 -->
+<div style="display:flex;flex-direction:column;align-items:center">
+  <div class="settings-window">
+    <div class="titlebar">
+      <div class="traffic-lights"><div class="traffic-light tl-close"></div><div class="traffic-light tl-minimize"></div><div class="traffic-light tl-zoom"></div></div>
+      <div class="titlebar-title">设置</div>
+      <div class="titlebar-right"><div class="model-status">SenseVoice</div></div>
+    </div>
+    <div class="settings-body">
+      <!-- 设置侧边导航 -->
+      <div class="settings-nav">
+        <div class="settings-nav-item active">
+          <span class="nav-icon">&#127911;</span>
+          <span>音频处理</span>
+        </div>
+        <div class="settings-nav-item">
+          <span class="nav-icon">&#128265;</span>
+          <span>语音模型</span>
+        </div>
+        <div class="settings-nav-item">
+          <span class="nav-icon">&#128190;</span>
+          <span>存储</span>
+        </div>
+        <div class="settings-nav-item">
+          <span class="nav-icon">&#128228;</span>
+          <span>导出</span>
+        </div>
+        <div class="settings-nav-item">
+          <span class="nav-icon">&#128213;</span>
+          <span>数据</span>
+        </div>
+        <div style="flex:1"></div>
+        <div class="settings-nav-item">
+          <span class="nav-icon">&#8505;</span>
+          <span>关于</span>
+        </div>
+      </div>
+      <!-- 设置内容 -->
+      <div class="settings-content">
+        <!-- 音频处理 -->
+        <div class="settings-section">
+          <div class="settings-section-title">录音</div>
+          <div class="settings-row">
+            <div><div class="settings-label">录音格式</div><div class="settings-label-desc">PCM 质量更高，AAC 更节省空间</div></div>
+            <div class="settings-control">
+              <select><option>PCM (WAV)</option><option>AAC (M4A)</option></select>
+            </div>
+          </div>
+          <div class="settings-row">
+            <div><div class="settings-label">采样率</div><div class="settings-label-desc">ASR 引擎要求固定为 16kHz</div></div>
+            <div class="settings-control"><span class="setting-tag">16 kHz (固定)</span></div>
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <div class="settings-section-title">语音检测</div>
+          <div class="settings-row">
+            <div><div class="settings-label">VAD 灵敏度</div><div class="settings-label-desc">越高越容易检测到微弱语音，但也可能增加误触发</div></div>
+            <div class="slider-control">
+              <input type="range" min="0" max="100" value="50">
+              <span class="slider-value">50</span>
+            </div>
+          </div>
+          <div class="settings-row">
+            <div><div class="settings-label">最小语音片段</div><div class="settings-label-desc">短于此时长的语音片段将被忽略</div></div>
+            <div class="settings-control"><select><option>300 ms</option><option>500 ms</option><option selected>800 ms</option><option>1000 ms</option></select></div>
+          </div>
+          <div class="settings-row">
+            <div><div class="settings-label">片段静音合并间隔</div><div class="settings-label-desc">两段语音间隔小于此时长则合并为一个片段</div></div>
+            <div class="settings-control"><select><option>200 ms</option><option selected>300 ms</option><option>500 ms</option></select></div>
+          </div>
+        </div>
+
+        <!-- 预览：其他导航项 */}
+        <div style="border-top:1px solid rgba(255,255,255,0.06);padding-top:12px;margin-top:8px">
+          <div style="font-size:11px;color:#48484a;text-align:center;line-height:1.6">
+            &#9654; 语音模型 · 模型下载 / 版本切换 / SenseVoice Small & Medium<br>
+            &#9654; 存储 · 保留音频开关 / 缓存占用 450MB / 清理缓存<br>
+            &#9654; 导出 · 默认格式 TXT / MD / SRT<br>
+            &#9654; 数据 · 导出全部数据 / 导入数据 / 重置
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="mockup-label">场景 3 &#183; 设置窗口（浮动独立窗口）</div>
+</div>
+
+</div>
+
+<p class="caption">
+  <strong>ByteVoice macOS 客户端 &#183; 三个核心窗口</strong><br>
+  左：笔记详情时间轴 &nbsp;|&nbsp; 中：实时录音转写流 &nbsp;|&nbsp; 右：设置窗口（左侧导航 → 右侧内容面板）
+</p>
+
+</body>
+</html>

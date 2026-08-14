@@ -1,9 +1,0 @@
-${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/audioplayers_darwin.framework
-${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/desktop_drop.framework
-${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/file_selector_macos.framework
-${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/flutter_local_notifications.framework
-${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/record_macos.framework
-${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/shared_preferences_foundation.framework
-${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/libonnxruntime.1.24.4.dylib
-${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/libsherpa-onnx-c-api.dylib
-${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/libsherpa-onnx-cxx-api.dylib
