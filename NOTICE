@@ -1,0 +1,20 @@
+第三方组件与模型
+================
+
+本仓库只包含 Byte Voice 自己的代码，以 MIT 协议授权（见 LICENSE）。运行它还需要
+下面这些东西，它们各有各的协议，都不随本仓库分发：
+
+1. sherpa-onnx（Apache-2.0）
+   语音识别 / 语音合成 / VAD / 标点的运行时，通过 pub 依赖引入。
+   https://github.com/k2-fsa/sherpa-onnx
+
+2. 语音模型（App 首次使用时从模型服务器下载到本机）
+   - Silero VAD            — Silero Team
+   - SenseVoice            — FunAudioLLM / FunASR（中英日韩粤）
+   - Zipformer Streaming ZH — k2-fsa（流式中文）
+   - VITS（fanchen-C）      — 中文多说话人模型，187 音色
+   - CT-Transformer        — 标点恢复
+   模型文件存在用户自己的机器上（应用支持目录），下载和使用请遵守各自项目的协议。
+
+3. ffmpeg（可选）
+   导入非 WAV 音频时用它解码，需要系统 PATH 里有 ffmpeg。
